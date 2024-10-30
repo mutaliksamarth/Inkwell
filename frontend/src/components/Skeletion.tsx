@@ -1,4 +1,6 @@
-const BlogSkeleton = () => {
+import Appbar from "./AppBar";
+
+export const BlogSkeleton = () => {
     return (
         <div className="animate-pulse p-6 border border-slate-200 rounded-lg max-w-screen-md">
             <div className="flex items-center space-x-3">
@@ -42,3 +44,60 @@ export const LoadingState = () => {
         </div>
     );
 };
+
+
+const SkeletonPulse = ({ className }: { className: string }) => (
+    <div className={`animate-pulse bg-slate-200 rounded ${className}`}></div>
+  );
+  
+  export const FullBlogSkeleton = () => {
+    return (
+      <div>
+        <Appbar />
+        <div className="flex justify-center">
+          <div className="grid grid-cols-12 px-10 w-full pt-4 max-w-screen-xl">
+            <div className="col-span-8 py-12 border-r border-slate-200 pr-12">
+              {/* Title skeleton */}
+              <SkeletonPulse className="h-16 w-3/4 mb-6" />
+              
+              {/* Date skeleton */}
+              <SkeletonPulse className="h-4 w-40 mb-6" />
+              
+              {/* Content paragraphs skeleton */}
+              <div className="space-y-4">
+                <SkeletonPulse className="h-4 w-full" />
+                <SkeletonPulse className="h-4 w-full" />
+                <SkeletonPulse className="h-4 w-5/6" />
+                <SkeletonPulse className="h-4 w-full" />
+                <SkeletonPulse className="h-4 w-4/5" />
+                <SkeletonPulse className="h-4 w-full" />
+                <SkeletonPulse className="h-4 w-3/4" />
+              </div>
+            </div>
+            
+            <div className="col-span-4 py-12 pl-12">
+              {/* Author section skeleton */}
+              <SkeletonPulse className="h-4 w-16 mb-2" />
+              
+              <div className="flex items-center">
+                {/* Avatar skeleton */}
+                <div className="mr-4">
+                  <SkeletonPulse className="h-16 w-16 rounded-full" />
+                </div>
+                
+                <div className="flex-1">
+                  {/* Author name skeleton */}
+                  <SkeletonPulse className="h-5 w-32 mb-1" />
+                  {/* Bio skeleton */}
+                  <SkeletonPulse className="h-4 w-full" />
+                  <SkeletonPulse className="h-4 w-4/5 mt-1" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
+  export default FullBlogSkeleton;

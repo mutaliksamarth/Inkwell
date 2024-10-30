@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 
 interface BlogCardProps {
@@ -5,16 +6,18 @@ interface BlogCardProps {
     title: string,
     content: string,
     publishDate: string,
+    id: number
 }
 
 const BlogCard = ({
+    id,
     autherName,
     title,
     content,
     publishDate
 }: BlogCardProps) => {
-    return (
-        <div className="group p-6 border border-slate-200 rounded-lg hover:shadow-md transition-shadow duration-300 max-w-screen-md cursor-pointer bg-white">
+    return (<Link to={`/blog/${id}`}>
+        <div className="group p-6 border border-slate-200 rounded-lg hover:shadow-md transition-shadow duration-300 max-w-screen-md cursor-pointer bg-white ">
             <div className="flex items-center space-x-3">
                 <Avatar name={autherName} />
                 <div className="font-medium text-sm text-slate-800">{autherName}</div>
@@ -42,6 +45,7 @@ const BlogCard = ({
                 </div>
             </div>
         </div>
+        </Link>
     );
 };
 
