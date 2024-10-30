@@ -7,6 +7,7 @@ import { Publish } from './pages/Publish';
 import { Edit } from './pages/Edit';
 import { useEffect, useState } from 'react';
 
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -32,6 +33,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blog/:id" element={<Blog />} />
+        <Route path="/update/:id" element={<Publish />} />
         <Route path="/blog/:id" element={<Blog />} />
 
         {/* Protected Routes */}

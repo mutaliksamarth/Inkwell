@@ -87,6 +87,7 @@ blogRouter.put('/update', async (c) => {
             error: error?.issues
         });
     }
+    
 
     try {
         const blog = await prisma.blog.update({

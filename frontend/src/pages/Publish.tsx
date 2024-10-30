@@ -1,46 +1,32 @@
-import { Appbar } from "../components/AppBar";
+import { useEffect, useState, ChangeEvent } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-import { useNavigate, useParams } from "react-router-dom";
-import { ChangeEvent, useState, useEffect } from "react";
+import { Appbar } from "../components/AppBar";
+import { useBlog } from "../hooks/index";
 
 export const Publish = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the blog ID from URL if it exists
+    const { id } = useParams<{ id: string }>();
     
+    const { loading: blogLoading, blog } = useBlog({ id: id || "" });
+
     useEffect(() => {
-        // If we have an ID, fetch the blog data
-        const fetchBlog = async () => {
-            if (!id) return;
-            
-            setLoading(true);
-            try {
-                const response = await axios.get(`${BACKEND_URL}/api/v1/blog/${id}`, {
-                    headers: {
-                        Authorization: localStorage.getItem("token") || ""
-                    }
-                });
-                setTitle(response.data.title);
-                setDescription(response.data.content);
-            } catch (error) {
-                console.error("Error fetching blog:", error);
-                navigate("/");
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchBlog();
-    }, [id, navigate]);
+        if (blog) {
+            setTitle(blog.title);
+            setDescription(blog.content);
+        }
+    }, [blog]);
 
     const handleSubmit = async () => {
+        setError(null);
         try {
             if (id) {
-                // Update existing blog
-                await axios.put(`${BACKEND_URL}/api/v1/blog/${id}`, {
+                await axios.put(`${BACKEND_URL}/api/v1/blog/update`, {
+                    id: blog?.id,
                     title,
                     content: description,
                 }, {
@@ -50,7 +36,6 @@ export const Publish = () => {
                 });
                 navigate(`/blog/${id}`);
             } else {
-                // Create new blog
                 const response = await axios.post(`${BACKEND_URL}/api/v1/blog/create`, {
                     title,
                     content: description,
@@ -61,12 +46,14 @@ export const Publish = () => {
                 });
                 navigate(`/blog/${response.data.id}`);
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error("Error saving blog:", error);
+            setError("Failed to save blog. Please try again.");
         }
     };
 
-    if (loading) {
+    if (blogLoading) {
         return (
             <div className="min-h-screen bg-zinc-50">
                 <Appbar />
@@ -88,7 +75,7 @@ export const Publish = () => {
             <div className="max-w-4xl mx-auto px-4 py-12">
                 <div className="bg-white rounded-xl shadow-sm border border-zinc-200 overflow-hidden">
                     <div className="p-8">
-                        {/* Title Input */}
+                        {error && <div className="text-red-600 mb-4">{error}</div>}
                         <input
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
@@ -96,14 +83,10 @@ export const Publish = () => {
                             className="w-full bg-transparent text-zinc-800 text-4xl font-bold mb-6 focus:outline-none placeholder-zinc-300 transition-colors"
                             placeholder="Enter your title..."
                         />
-                        
-                        {/* Text Editor */}
                         <TextEditor 
                             value={description}
                             onChange={(e) => setDescription(e.target.value)} 
                         />
-                        
-                        {/* Publishing Options */}
                         <div className="mt-8 flex items-center justify-between pt-6 border-t border-zinc-100">
                             <div className="text-sm text-zinc-500">
                                 {id ? "Changes save automatically" : "Draft saves automatically"}

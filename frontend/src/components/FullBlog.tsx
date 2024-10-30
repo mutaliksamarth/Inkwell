@@ -1,7 +1,7 @@
 import { Blog } from "../hooks";
 import { Appbar } from "./AppBar";
 import { Avatar } from "./BlogCard";
-import {  Trash2 } from "lucide-react";
+import {  Pencil,Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
@@ -51,11 +51,11 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
     typeof blog.authorId=== 'string' ? parseInt(blog.authorId) : blog.authorId
   );
 
-  // const handleEdit = () => {
-  //   if (blog.id) {
-  //     navigate(`/update/${blog.id}`);
-  //   }
-  // };
+  const handleEdit = () => {
+    if (blog.id) {
+      navigate(`/update/${blog.id}`);
+    }
+  };
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this blog post? This action cannot be undone.")) {
@@ -83,24 +83,25 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
               <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-zinc-900">{blog.title}</div>
               
               {!loading && isAuthor && (
-                <div className="flex gap-2">
-                  {/* <button
-                    onClick={handleEdit}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-zinc-100 rounded-lg hover:bg-zinc-200 transition-colors"
-                  >
-                    <Pencil size={16} />
-                    <span className="hidden sm:inline">Edit</span>
-                  </button> */}
-                  <button
-                    onClick={handleDelete}
-                    disabled={isDeleting}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50"
-                  >
-                    <Trash2 size={16} />
-                    <span className="hidden sm:inline">Delete</span>
-                  </button>
-                </div>
-              )}
+  <div className="flex gap-2">
+    <button
+      onClick={handleEdit}
+      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-zinc-100 rounded-lg hover:bg-zinc-200 transition-colors"
+    >
+      <Pencil size={16} />
+      <span className="hidden sm:inline">Edit</span>
+    </button>
+    <button
+      onClick={handleDelete}
+      disabled={isDeleting}
+      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50"
+    >
+      <Trash2 size={16} />
+      <span className="hidden sm:inline">Delete</span>
+    </button>
+  </div>
+)}
+
             </div>
 
             <div className="flex items-center gap-4 text-zinc-500 text-sm mb-8">
