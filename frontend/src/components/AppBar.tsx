@@ -71,7 +71,7 @@ export const Appbar = () => {
     };
 
     return (
-        <div className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-sm">
+        <div className="sticky top-0 z-50 border-b border-slate-200 bg-white ">
             <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 sm:px-6 py-3">
                 <Link 
                     to={'/blogs'} 

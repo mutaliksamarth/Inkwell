@@ -81,9 +81,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 >
                     {type === "signup" ? "Sign up" : "Sign in"}
                 </button>
-                    <div>{postInputs.name}</div>
-                    <div>{postInputs.email} </div>
-                    <div>{postInputs.password}</div>
+                    
             </div>
         </div>
     );
