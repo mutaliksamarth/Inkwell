@@ -3,14 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { LogOut, PlusIcon } from "lucide-react";
 import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 interface UserInfo {
   id: string;
   name: string;
   email: string;
 }
-
-import { BACKEND_URL } from "../config";
 
 export const Appbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -42,7 +41,6 @@ export const Appbar = () => {
             } catch (error) {
                 console.error("Error fetching user info:", error);
                 if (axios.isAxiosError(error) && error.response?.status === 401) {
-                    // Token expired or invalid
                     localStorage.removeItem("token");
                     navigate("/signin");
                 }
@@ -70,8 +68,35 @@ export const Appbar = () => {
         navigate("/signin");
     };
 
+    const handleNewPost = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        
+        if (!token) {
+            navigate("/signin");
+            return;
+        }
+
+        // Verify token validity before navigation
+        axios.get(`${BACKEND_URL}/api/v1/user/me`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(() => {
+            navigate("/publish");
+        })
+        .catch((error) => {
+            console.error("Error verifying auth:", error);
+            if (axios.isAxiosError(error) && error.response?.status === 401) {
+                localStorage.removeItem("token");
+                navigate("/signin");
+            }
+        });
+    };
+
     return (
-        <div className="sticky top-0 z-50 border-b border-slate-200 bg-white ">
+        <div className="sticky top-0 z-50 border-b border-slate-200 bg-white">
             <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 sm:px-6 py-3">
                 <Link 
                     to={'/blogs'} 
@@ -81,15 +106,15 @@ export const Appbar = () => {
                 </Link>
                 
                 <div className="flex items-center space-x-4">
-                    <Link to={`/publish`}>
-                        <button
-                            type="button"
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-900 rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-slate-500"
-                        >
-                            <PlusIcon className="w-3 h-3 mr-0.5" />
-                            New
-                        </button>
-                    </Link>
+                    <button
+                        onClick={handleNewPost}
+                        type="button"
+                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-900 rounded-full transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-slate-500"
+                    >
+                        <PlusIcon className="w-3 h-3 mr-0.5" />
+                        New
+                    </button>
+
                     <div className="relative" ref={dropdownRef}>
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -102,7 +127,6 @@ export const Appbar = () => {
                             )}
                         </button>
                         
-                        {/* Dropdown Menu */}
                         {isDropdownOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
                                 {loading ? (
@@ -137,7 +161,5 @@ export const Appbar = () => {
         </div>
     );
 };
-
-// PlusIcon component remains the same...
 
 export default Appbar;
